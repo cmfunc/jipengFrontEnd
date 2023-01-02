@@ -1,0 +1,5 @@
+<!--index.wxml-->
+<view class="container">
+  <map class="indexMap" id="userLocationMap" enable-3D="true" enable-overlooking="true">
+  </map>
+</view>
