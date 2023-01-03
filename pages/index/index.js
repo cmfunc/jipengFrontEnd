@@ -8,11 +8,36 @@ Page({
         id: 0,
         latitude: 39.984933,
         longitude: 116.495513,
+        title: "他的位置",
+        iconPath: "https://img0.baidu.com/it/u=1250551608,2180019998&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1672851600&t=36caed8db317a8fc4b37d31771de629a",
+        width: "80px",
+        height: "80px",
       },
       {
         id: 1,
         latitude: 39.986804,
         longitude: 116.495933,
+        title: "你的位置",
+        iconPath: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202104%2F22%2F20210422220415_2e4bd.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1675341823&t=d91faff48888046b8185b9b8ed611267",
+        width: "40px",
+        height: "40px",
+        callout: {
+          content: "177.24.61.17",
+          color: "rgb(255,255,255)", //文字颜色
+          borderWidth: 2,
+          borderColor: "#07C160", //边框颜色
+          bgColor: "#07C160",
+          padding: "2", //文本边缘留白
+          borderRadius: 8,
+          display: "ALWAYS",
+        },
+        label: {
+          content: "fuck me",
+          fontSize: 14,
+          color: "rgb(250,227,191)",
+          bgColor: "rgb(38,38,38)",
+          borderRadius: 5,
+        },
       }
     ],
     userLocationMapInfo: {

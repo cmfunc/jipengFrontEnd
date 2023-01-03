@@ -1,5 +1,5 @@
 <!--index.wxml-->
 <view class="container">
-  <map class="indexMap" id="userLocationMap" longitude="{{userLocationMapInfo.longitude}}" latitude="{{userLocationMapInfo.latitude}}" enable-3D="true" enable-overlooking="true" markers="{{markers}}">
+  <map class="indexMap" id="userLocationMap" longitude="{{userLocationMapInfo.longitude}}" latitude="{{userLocationMapInfo.latitude}}" enable-3D="true" enable-overlooking="true" markers="{{markers}}" show-compass="true" enable-overlooking="true" enable-traffic="true" enable-building="true">
   </map>
 </view>
