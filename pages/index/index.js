@@ -1,5 +1,5 @@
 // index.js
-// 获取应用实例
+// 获取小程序全局唯一的App实例
 const app = getApp()
 
 Page({
@@ -32,7 +32,7 @@ Page({
           display: "ALWAYS",
         },
         label: {
-          content: "fuck me",
+          content: "在这里，我在这里，快来找我丸！",
           fontSize: 14,
           color: "rgb(250,227,191)",
           bgColor: "rgb(38,38,38)",
@@ -45,7 +45,9 @@ Page({
       longitude: 116.495513,
     }
   },
-  onLoad() {
+  // 页面加载
+  onLoad(query) {
+    console.log(query)
     wx.getSetting({
       success(res) {
         if (!res.authSetting['scope.userLocation']) {
@@ -101,5 +103,37 @@ Page({
         }
       }
     })
-  }
+  },
+  // 页面切入前台
+  onShow() {},
+  // 页面渲染完成
+  onReady() {},
+  // 页面切入后台
+  onHide() {},
+  // 页面卸载
+  onUnload() {},
+  // 页面垂直滑动事件
+  onPageScroll(scrollPram) {
+    console.log(scrollPram.scrollTop)
+  },
+  // 点击转发按钮
+  onShareAppMessage() {
+    return {
+      title: "激碰",
+      path: "/pages/index/index",
+    }
+  },
+  // 分享朋友圈
+  onShareTimeline() {},
+  // 组建处理函数
+  viewTap: function () {
+    console.log('view tap')
+    // TODO 此处，在点击地图时，自动请求服务端接口，获取
+    this.setData({
+      'markers[0].latitude': '39.985311',
+    })
+    this.setData({
+      'markers[0].longitude': '116.493597',
+    })
+  },
 })
