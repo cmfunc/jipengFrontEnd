@@ -2,6 +2,12 @@
 const worker = wx.createWorker('workers/request/index.js') // 文件名指定 worker 的入口文件路径，绝对路径
 
 App({
+  // 全局变量
+  globalData: {
+    userinfo: {
+      openid: ""
+    }
+  },
   // 小程序初始化
   onLaunch() {
     // 登录
@@ -23,6 +29,7 @@ App({
             success(res) {
               console.log("调用本地服务器成功")
               console.log(res)
+              this.globalData.userinfo.openid = res.openid
             },
           })
         } else {

@@ -15,5 +15,7 @@
       "desc": "你的位置信息将用于查找身边的人"
     }
   },
-  "workers": "workers"
+  "workers": "workers",
+  "plugins": {
+  }
 }

@@ -16,6 +16,7 @@
   enable-overlooking="true" 
   enable-traffic="true" 
   enable-building="true"
-  setting="{{setting}}">
+  setting="{{setting}}"
+  polyline="{{polyline}}">
   </map>
 </view>

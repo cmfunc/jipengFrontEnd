@@ -1,4 +1,5 @@
 // index.js
+var utils = require('/utils/util.js')
 // 获取小程序全局唯一的App实例
 const app = getApp()
 
@@ -45,7 +46,8 @@ Page({
       latitude: 39.984933,
       longitude: 116.495513,
     },
-    setting:{},
+    setting: {},
+    polyline: {}, //路线
   },
   // 页面加载
   onLoad(query) {
@@ -61,11 +63,9 @@ Page({
                 isHighAccuracy: true,
                 highAccuracyExpireTime: 4000,
                 fail: (res) => {
-                  console.log("获取到精确位置信息:")
                   console.log(res)
                 },
                 success: (res) => {
-                  console.log("获取到精确位置信息:")
                   console.log(res)
                   mapCtx = wx.createMapContext('userLocationMap')
                   // 默认值
@@ -96,7 +96,6 @@ Page({
 
                 },
                 complete: (res) => {
-                  console.log("获取到精确位置信息:")
                   console.log(res)
                 }
               })
@@ -106,14 +105,12 @@ Page({
       }
     })
     // 设置地图
-    this.setData(
-      {
-        'setting':{
-          showLocation:true,
-          showScale:true,
-        }
+    this.setData({
+      'setting': {
+        showLocation: true,
+        showScale: true,
       }
-    )
+    })
   },
   // 页面切入前台
   onShow() {
@@ -122,6 +119,34 @@ Page({
     setIntervalNo = setInterval(() => {
       // 每秒获取一次当前地图上的用户和位置信息
       console.log('获取当前地图用户信息')
+      wx.getLocation({
+        altitude: true,
+        isHighAccuracy: true,
+        highAccuracyExpireTime: 4000,
+        fail: (res) => {
+          console.log(res)
+        },
+        success: (res) => {
+          console.log(res)
+          // 上传位置信息
+          res.openid = app.globalData.openid
+          res.upload_ts = utils.formatNumber()
+          wx.request({
+            url: 'http://localhost:7777/v1/geo',
+            method: 'POST',
+            data: res,
+            header: {
+              'content-type': 'application/json' // 默认值
+            },
+            success(res) {}
+          })
+
+
+        },
+        complete: (res) => {
+          console.log(res)
+        }
+      })
       // 将新用户生成array，替换markers
     }, 1000);
     this.setData({
@@ -157,5 +182,6 @@ Page({
     this.setData({
       'markers[0].longitude': '116.493597',
     })
+    // TODO 点击后，获取两个坐标点信息，页面添加路线规划信息；
   },
 })
