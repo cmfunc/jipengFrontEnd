@@ -9,8 +9,13 @@
   enable-overlooking="true" 
   markers="{{markers}}" 
   show-compass="true" 
+  show-location="true"
+  scale="20"
+  min-scale="1"
+  max-scale="100"
   enable-overlooking="true" 
   enable-traffic="true" 
-  enable-building="true">
+  enable-building="true"
+  setting="{{setting}}">
   </map>
 </view>

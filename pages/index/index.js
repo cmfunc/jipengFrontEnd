@@ -4,6 +4,7 @@ const app = getApp()
 
 Page({
   data: {
+    setIntervalNo: 0,
     markers: [{
         id: 0,
         latitude: 39.984933,
@@ -43,7 +44,8 @@ Page({
     userLocationMapInfo: {
       latitude: 39.984933,
       longitude: 116.495513,
-    }
+    },
+    setting:{},
   },
   // 页面加载
   onLoad(query) {
@@ -103,9 +105,29 @@ Page({
         }
       }
     })
+    // 设置地图
+    this.setData(
+      {
+        'setting':{
+          showLocation:true,
+          showScale:true,
+        }
+      }
+    )
   },
   // 页面切入前台
-  onShow() {},
+  onShow() {
+    // 设置定时器
+    var setIntervalNo = 0
+    setIntervalNo = setInterval(() => {
+      // 每秒获取一次当前地图上的用户和位置信息
+      console.log('获取当前地图用户信息')
+      // 将新用户生成array，替换markers
+    }, 1000);
+    this.setData({
+      'setIntervalNo': setIntervalNo
+    })
+  },
   // 页面渲染完成
   onReady() {},
   // 页面切入后台
