@@ -1,5 +1,5 @@
 // index.js
-var utils = require('/utils/util.js')
+var utils = require('../../utils/util.js')
 // 获取小程序全局唯一的App实例
 const app = getApp()
 
@@ -119,34 +119,7 @@ Page({
     setIntervalNo = setInterval(() => {
       // 每秒获取一次当前地图上的用户和位置信息
       console.log('获取当前地图用户信息')
-      wx.getLocation({
-        altitude: true,
-        isHighAccuracy: true,
-        highAccuracyExpireTime: 4000,
-        fail: (res) => {
-          console.log(res)
-        },
-        success: (res) => {
-          console.log(res)
-          // 上传位置信息
-          res.openid = app.globalData.openid
-          res.upload_ts = utils.formatNumber()
-          wx.request({
-            url: 'http://localhost:7777/v1/geo',
-            method: 'POST',
-            data: res,
-            header: {
-              'content-type': 'application/json' // 默认值
-            },
-            success(res) {}
-          })
-
-
-        },
-        complete: (res) => {
-          console.log(res)
-        }
-      })
+      
       // 将新用户生成array，替换markers
     }, 1000);
     this.setData({

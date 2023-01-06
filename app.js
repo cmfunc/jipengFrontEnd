@@ -10,6 +10,7 @@ App({
   },
   // 小程序初始化
   onLaunch() {
+    const that = this
     // 登录
     wx.login({
       timeout: 5000,
@@ -29,7 +30,7 @@ App({
             success(res) {
               console.log("调用本地服务器成功")
               console.log(res)
-              this.globalData.userinfo.openid = res.openid
+              that.globalData.userinfo.openid = res.openid
             },
           })
         } else {
