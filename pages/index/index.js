@@ -67,7 +67,7 @@ Page({
                 },
                 success: (res) => {
                   console.log(res)
-                  mapCtx = wx.createMapContext('userLocationMap')
+                  var mapCtx = wx.createMapContext('userLocationMap')
                   // 默认值
                   const setting = {
                     skew: 0,
@@ -111,6 +111,13 @@ Page({
         showScale: true,
       }
     })
+    // 开始监听实时地理位置变化事件
+    wx.startLocationUpdateBackground({
+      success: (res) => {
+        console.log(res)
+      },
+    })
+    wx.startLocationUpdate()
   },
   // 页面切入前台
   onShow() {
@@ -118,10 +125,20 @@ Page({
     var setIntervalNo = 0
     setIntervalNo = setInterval(() => {
       // 每秒获取一次当前地图上的用户和位置信息
-      console.log('获取当前地图用户信息')
-      
+      console.log('拉取服务器中周围用户信息')
       // 将新用户生成array，替换markers
     }, 1000);
+    wx.onLocationChange((result) => {
+      // 上传用户位置变化
+      console.log('用户位置变化', result)
+      // TODO 此处，在点击地图时，自动请求服务端接口，获取
+      this.setData({
+        'markers[0].latitude': '39.985311',
+      })
+      this.setData({
+        'markers[0].longitude': '116.493597',
+      })
+    })
     this.setData({
       'setIntervalNo': setIntervalNo
     })
@@ -148,13 +165,6 @@ Page({
   // 组建处理函数
   viewTap: function () {
     console.log('view tap')
-    // TODO 此处，在点击地图时，自动请求服务端接口，获取
-    this.setData({
-      'markers[0].latitude': '39.985311',
-    })
-    this.setData({
-      'markers[0].longitude': '116.493597',
-    })
-    // TODO 点击后，获取两个坐标点信息，页面添加路线规划信息；
+    // TODO 点击marker后，获取两个坐标点信息，页面添加路线规划信息；
   },
 })
