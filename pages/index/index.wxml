@@ -1,22 +1,5 @@
 <!--index.wxml-->
 <view class="container" bindtap="viewTap">
-  <map 
-  class="indexMap" 
-  id="userLocationMap" 
-  longitude="{{userLocationMapInfo.longitude}}" 
-  latitude="{{userLocationMapInfo.latitude}}" 
-  enable-3D="true" 
-  enable-overlooking="true" 
-  markers="{{markers}}" 
-  show-compass="true" 
-  show-location="true"
-  scale="20"
-  min-scale="1"
-  max-scale="100"
-  enable-overlooking="true" 
-  enable-traffic="true" 
-  enable-building="true"
-  setting="{{setting}}"
-  polyline="{{polyline}}">
+  <map class="indexMap" id="userLocationMap" longitude="{{userLocationMapInfo.longitude}}" latitude="{{userLocationMapInfo.latitude}}" enable-3D="true" enable-overlooking="true" markers="{{markers}}" show-compass="true" show-location="true" scale="20" min-scale="1" max-scale="100" enable-overlooking="true" enable-traffic="true" enable-building="true" setting="{{setting}}" polyline="{{polyline}}">
   </map>
 </view>

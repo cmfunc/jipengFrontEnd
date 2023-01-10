@@ -1,12 +1,13 @@
 {
-  "pages":[
-    "pages/index/index"
+  "pages": [
+    "pages/index/index",
+    "pages/user/user"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "Weixin",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
@@ -15,7 +16,12 @@
       "desc": "你的位置信息将用于查找身边的人"
     }
   },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "workers": "workers",
-  "plugins": {
+  "plugins": {},
+  "useExtendedLib": {
+    "weui": true
   }
 }

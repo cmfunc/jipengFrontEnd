@@ -2,10 +2,12 @@
 var utils = require('../../utils/util.js')
 // 获取小程序全局唯一的App实例
 const app = getApp()
+// 定义默认头像
+const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+
 
 Page({
   data: {
-    setIntervalNo: 0,
     markers: [{
         id: 0,
         latitude: 39.984933,
@@ -46,8 +48,24 @@ Page({
       latitude: 39.984933,
       longitude: 116.495513,
     },
-    setting: {},
+    setting: {
+      skew: 0,
+      rotate: 0,
+      showLocation: false,
+      showScale: false,
+      subKey: '',
+      layerStyle: 1,
+      enableZoom: true,
+      enableScroll: true,
+      enableRotate: false,
+      showCompass: false,
+      enable3D: true,
+      enableOverlooking: false,
+      enableSatellite: false,
+      enableTraffic: true
+    },
     polyline: {}, //路线
+    avatarUrl: defaultAvatarUrl,
   },
   // 页面加载
   onLoad(query) {
@@ -68,32 +86,6 @@ Page({
                 success: (res) => {
                   console.log(res)
                   var mapCtx = wx.createMapContext('userLocationMap')
-                  // 默认值
-                  const setting = {
-                    skew: 0,
-                    rotate: 0,
-                    showLocation: false,
-                    showScale: false,
-                    subKey: '',
-                    layerStyle: 1,
-                    enableZoom: true,
-                    enableScroll: true,
-                    enableRotate: false,
-                    showCompass: false,
-                    enable3D: false,
-                    enableOverlooking: false,
-                    enableSatellite: false,
-                    enableTraffic: false,
-                  }
-
-                  this.setData({
-                    // 仅设置的属性会生效，其它的不受影响
-                    setting: {
-                      enable3D: true,
-                      enableTraffic: true
-                    }
-                  })
-
                 },
                 complete: (res) => {
                   console.log(res)
@@ -119,15 +111,25 @@ Page({
     })
     wx.startLocationUpdate()
   },
+  // 拉取其他用户位置信息
+  fetchOtherUserGeo: function () {
+    // 通过接口拉取数据
+
+    // 刷新markers数据
+    // 最后将自己的数据append进入
+    // 自己的markers需要绑定点击事件，并且跳转到个人页进行信息修改和展示
+
+  },
+  // 跳转用户详情页
+  navigateToUserDetail: function () {
+    // 判断当前点击的如果是自己
+    wx.navigateTo({
+      url: '/pages/user/user',
+    })
+    // 当前点击的其他人
+  },
   // 页面切入前台
   onShow() {
-    // 设置定时器
-    var setIntervalNo = 0
-    setIntervalNo = setInterval(() => {
-      // 每秒获取一次当前地图上的用户和位置信息
-      console.log('拉取服务器中周围用户信息')
-      // 将新用户生成array，替换markers
-    }, 1000);
     wx.onLocationChange((result) => {
       // 上传用户位置变化
       console.log('用户位置变化', result)
@@ -139,9 +141,7 @@ Page({
         'markers[0].longitude': '116.493597',
       })
     })
-    this.setData({
-      'setIntervalNo': setIntervalNo
-    })
+    this.setData({})
   },
   // 页面渲染完成
   onReady() {},
@@ -166,5 +166,6 @@ Page({
   viewTap: function () {
     console.log('view tap')
     // TODO 点击marker后，获取两个坐标点信息，页面添加路线规划信息；
+    this.navigateToUserDetail()
   },
 })
