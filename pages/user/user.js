@@ -1,4 +1,4 @@
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+const defaultAvatarUrl = 'https://img.wxcha.com/m00/4c/bd/0fbb00337b0243db2c3f19cb0032758d.jpg?down'
 
 
 Page({

@@ -141,12 +141,46 @@ Page({
         'markers[0].longitude': '116.493597',
       })
     })
-    this.setData({})
+
   },
   // 页面渲染完成
-  onReady() {},
+  onReady() {
+    wx.connectSocket({
+      url: 'ws://127.0.0.1:7770/ws?user_id=111',
+      success: function () {
+        console.log('socket 连接成功')
+      },
+      fail: () => {
+        console.log('socket 连接失败')
+      },
+    })
+    wx.onSocketOpen((result) => {
+      console.log("socket连接打开", result)
+      wx.sendSocketMessage({
+        data: JSON.stringify({
+          user_id: "111",
+          type: "im",
+          msg: "呼呼",
+        }),
+        success: function () {
+          console.log('socket 发消息 成功')
+        },
+        fail: () => {
+          console.log('socket 发消息 失败')
+        },
+      })
+    })
+    wx.onSocketMessage((res) => {
+      console.log('接受服务端socket消息', res)
+    })
+  },
   // 页面切入后台
-  onHide() {},
+  onHide() {
+    // TODO 关闭socket
+    wx.closeSocket({
+      code: 0,
+    })
+  },
   // 页面卸载
   onUnload() {},
   // 页面垂直滑动事件
