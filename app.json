@@ -1,7 +1,6 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/user/user"
+    "pages/index/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -19,7 +18,6 @@
   "requiredPrivateInfos": [
     "getLocation"
   ],
-  "workers": "workers",
   "plugins": {},
   "useExtendedLib": {
     "weui": true

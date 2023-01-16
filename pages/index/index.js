@@ -1,107 +1,29 @@
 // index.js
-var utils = require('../../utils/util.js')
 // 获取小程序全局唯一的App实例
 const app = getApp()
-// 定义默认头像
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
+let rewardedVideoAd = null
 
 Page({
   data: {
-    markers: [{
-        id: 0,
-        latitude: 39.984933,
-        longitude: 116.495513,
-        title: "他的位置",
-        iconPath: "https://img0.baidu.com/it/u=1250551608,2180019998&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1672851600&t=36caed8db317a8fc4b37d31771de629a",
-        width: "80px",
-        height: "80px",
-      },
-      {
-        id: 1,
-        latitude: 39.986804,
-        longitude: 116.495933,
-        title: "你的位置",
-        iconPath: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202104%2F22%2F20210422220415_2e4bd.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1675341823&t=d91faff48888046b8185b9b8ed611267",
-        width: "40px",
-        height: "40px",
-        callout: {
-          content: "177.24.61.17",
-          color: "rgb(255,255,255)", //文字颜色
-          borderWidth: 2,
-          borderColor: "#07C160", //边框颜色
-          bgColor: "#07C160",
-          padding: "2", //文本边缘留白
-          borderRadius: 8,
-          display: "ALWAYS",
-        },
-        label: {
-          content: "在这里，我在这里，快来找我丸！",
-          fontSize: 14,
-          color: "rgb(250,227,191)",
-          bgColor: "rgb(38,38,38)",
-          borderRadius: 5,
-        },
-      }
-    ],
-    userLocationMapInfo: {
-      latitude: 39.984933,
-      longitude: 116.495513,
-    },
-    setting: {
-      skew: 0,
-      rotate: 0,
-      showLocation: false,
-      showScale: false,
-      subKey: '',
-      layerStyle: 1,
-      enableZoom: true,
-      enableScroll: true,
-      enableRotate: false,
-      showCompass: false,
-      enable3D: true,
-      enableOverlooking: false,
-      enableSatellite: false,
-      enableTraffic: true
-    },
-    polyline: {}, //路线
-    avatarUrl: defaultAvatarUrl,
+    user: {
+      longitude: 0, //用户经度
+      latitude: 0, //用户纬度
+      mapSetting: {}, //用户地图设置
+      mapPolyline: {}, //用户路线
+      markers: [], //markers小车
+    }, //用户数据
+    avatarUrl: 'https://img.wxcha.com/m00/4c/bd/0fbb00337b0243db2c3f19cb0032758d.jpg?down',
+    theme: wx.getSystemInfoSync().theme,
   },
   // 页面加载
   onLoad(query) {
     console.log(query)
-    wx.getSetting({
-      success(res) {
-        if (!res.authSetting['scope.userLocation']) {
-          wx.authorize({
-            scope: 'scope.userLocation',
-            success() {
-              wx.getLocation({
-                altitude: true,
-                isHighAccuracy: true,
-                highAccuracyExpireTime: 4000,
-                fail: (res) => {
-                  console.log(res)
-                },
-                success: (res) => {
-                  console.log(res)
-                  var mapCtx = wx.createMapContext('userLocationMap')
-                },
-                complete: (res) => {
-                  console.log(res)
-                }
-              })
-            }
-          })
-        }
-      }
-    })
-    // 设置地图
-    this.setData({
-      'setting': {
-        showLocation: true,
-        showScale: true,
-      }
+    // 修改主题
+    wx.onThemeChange((result) => {
+      this.setData({
+        theme: result.theme
+      })
     })
     // 开始监听实时地理位置变化事件
     wx.startLocationUpdateBackground({
@@ -111,42 +33,41 @@ Page({
     })
     wx.startLocationUpdate()
   },
-  // 拉取其他用户位置信息
-  fetchOtherUserGeo: function () {
-    // 通过接口拉取数据
-
-    // 刷新markers数据
-    // 最后将自己的数据append进入
-    // 自己的markers需要绑定点击事件，并且跳转到个人页进行信息修改和展示
-
-  },
-  // 跳转用户详情页
-  navigateToUserDetail: function () {
-    // 判断当前点击的如果是自己
-    wx.navigateTo({
-      url: '/pages/user/user',
-    })
-    // 当前点击的其他人
-  },
   // 页面切入前台
   onShow() {
     wx.onLocationChange((result) => {
       // 上传用户位置变化
-      console.log('用户位置变化', result)
-      // TODO 此处，在点击地图时，自动请求服务端接口，获取
-      this.setData({
-        'markers[0].latitude': '39.985311',
+      console.log('用户位置变化' + result)
+      wx.request({
+        url: 'http://localhost:7777/v1/geo',
+        method: "POST",
+        data: result,
+        header: {
+          'content-type': 'application/json',
+          'openid':app.globalData.openid,
+          'sessionKey':app.globalData.sessionKey,
+        },
+        success(res) {
+          console.log('上传用户位置成功' + res)
+        },
+        fail(res) {
+          console.log('上传用户位置失败' + res)
+          // 根据状态码，选择重新登陆
+        }
       })
+      // 修改map组件的经纬度
       this.setData({
-        'markers[0].longitude': '116.493597',
+        'user.longitude': result.longitude,
+        'user.latitude': result.latitude,
       })
+      console.log(app.globalData)
     })
 
   },
   // 页面渲染完成
   onReady() {
     wx.connectSocket({
-      url: 'ws://127.0.0.1:7770/ws?user_id=111',
+      url: 'ws://127.0.0.1:7770/ws?user_id='+app.globalData.openid,
       success: function () {
         console.log('socket 连接成功')
       },
@@ -158,7 +79,7 @@ Page({
       console.log("socket连接打开", result)
       wx.sendSocketMessage({
         data: JSON.stringify({
-          user_id: "111",
+          user_id: app.globalData.openid,
           type: "im",
           msg: "呼呼",
         }),
@@ -172,34 +93,25 @@ Page({
     })
     wx.onSocketMessage((res) => {
       console.log('接受服务端socket消息', res)
+      // 获取marker中的用户，修改marker中的数据
+    })
+  },
+  // 选择用户头像
+  onChooseAvatar(e) {
+    const {
+      avatarUrl
+    } = e.detail
+    this.setData({
+      avatarUrl,
     })
   },
   // 页面切入后台
   onHide() {
-    // TODO 关闭socket
+    // 关闭socket
     wx.closeSocket({
       code: 0,
     })
   },
   // 页面卸载
   onUnload() {},
-  // 页面垂直滑动事件
-  onPageScroll(scrollPram) {
-    console.log(scrollPram.scrollTop)
-  },
-  // 点击转发按钮
-  onShareAppMessage() {
-    return {
-      title: "激碰",
-      path: "/pages/index/index",
-    }
-  },
-  // 分享朋友圈
-  onShareTimeline() {},
-  // 组建处理函数
-  viewTap: function () {
-    console.log('view tap')
-    // TODO 点击marker后，获取两个坐标点信息，页面添加路线规划信息；
-    this.navigateToUserDetail()
-  },
 })

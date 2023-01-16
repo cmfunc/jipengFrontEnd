@@ -1,12 +1,9 @@
 // app.js
-const worker = wx.createWorker('workers/request/index.js') // 文件名指定 worker 的入口文件路径，绝对路径
 
 App({
-  // 全局变量
   globalData: {
-    userinfo: {
-      openid: ""
-    }
+    openid: '',
+    sessionKey: '',
   },
   // 小程序初始化
   onLaunch() {
@@ -19,41 +16,35 @@ App({
         console.log(res)
         if (res.code) {
           wx.request({
-            url: 'http://localhost:7777/v1/login', // TODO 修改为域名
+            url: 'http://localhost:7777/v1/login',
             method: "POST",
             data: {
-              code: res.code
+              code: res.code,
             },
             header: {
-              'content-type': 'application/json' // 默认值
+              'content-type': 'application/json'
             },
             success(res) {
-              console.log("调用本地服务器成功")
-              console.log(res)
-              that.globalData.userinfo.openid = res.openid
+              console.log('调用本地服务器成功' + res)
+              that.globalData.openid = res.openid
+              that.globalData.sessionKey = res.sessionKey
+              console.log(that.globalData)
             },
+            fail(res) {
+              console.log('调用本地服务器失败' + res)
+            }
           })
         } else {
           console.log('登陆失败！' + res.errMsg)
         }
-        worker.postMessage({
-          msg: 'hello worker'
-        })
       },
       fail: res => {
-        console.log(res)
+        console.log('wx.login失败' + res)
       },
-      complete: res => {
-        // console.log(res)
-      }
     })
   },
   // 小程序切前台
-  onShow() {
-
-  },
+  onShow() {},
   // 小程序切后台
-  onHide() {
-
-  },
+  onHide() {},
 })

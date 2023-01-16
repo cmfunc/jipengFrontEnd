@@ -1,5 +1,17 @@
 <!--index.wxml-->
 <view class="container" bindtap="viewTap">
-  <map class="indexMap" id="userLocationMap" longitude="{{userLocationMapInfo.longitude}}" latitude="{{userLocationMapInfo.latitude}}" enable-3D="true" enable-overlooking="true" markers="{{markers}}" show-compass="true" show-location="true" scale="20" min-scale="1" max-scale="100" enable-overlooking="true" enable-traffic="true" enable-building="true" setting="{{setting}}" polyline="{{polyline}}">
+  <map class="indexMap" id="userLocationMap" longitude="{{user.longitude}}" latitude="{{user.latitude}}" enable-3D="true" enable-overlooking="true" markers="{{markers}}" show-compass="true" show-location="true" scale="20" min-scale="1" max-scale="100" enable-overlooking="true" enable-traffic="true" enable-building="true" setting="{{user.mapSetting}}" polyline="{{user.mapPolyline}}">
   </map>
+  <view data-weui-theme="{{theme}}">
+    <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{avatarUrl}}"></image>
+    </button>
+    <mp-form>
+      <mp-cells>
+        <mp-cell title="昵称">
+          <input type="nickname" class="weui-input" placeholder="请输入昵称" />
+        </mp-cell>
+      </mp-cells>
+    </mp-form>
+  </view>
 </view>
