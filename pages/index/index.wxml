@@ -1,6 +1,9 @@
 <!--index.wxml-->
-<view class="container" bindtap="viewTap">
-  <map class="indexMap" id="userLocationMap" longitude="{{user.longitude}}" latitude="{{user.latitude}}" enable-3D="true" enable-overlooking="true" markers="{{markers}}" show-compass="true" show-location="true" scale="20" min-scale="1" max-scale="100" enable-overlooking="true" enable-traffic="true" enable-building="true" setting="{{user.mapSetting}}" polyline="{{user.mapPolyline}}">
+<view class="container" bindtap="bindTap">
+  <map class="indexMap" id="userLocationMap" longitude="{{user.longitude}}" latitude="{{user.latitude}}" enable-3D="true" markers="{{markers}}" show-location='true' scale="20" min-scale='1' max-scale='100' enable-traffic='true' enable-building='true' setting="{{user.mapSetting}}" polyline='{{user.mapPolyline}}' enable-overlooking='true' skew='17'>
+    <cover-view slot="callout" wx:for="{{customCalloutArray}}" wx:key="customCallout">
+      <cover-view marker-id="{{customCallout.id}}"></cover-view>
+    </cover-view>
   </map>
   <view data-weui-theme="{{theme}}">
     <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
