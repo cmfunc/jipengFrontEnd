@@ -4,14 +4,24 @@ const app = getApp()
 
 Page({
   data: {
+    //用户数据
     user: {
       longitude: 0, //用户经度
       latitude: 0, //用户纬度
       mapSetting: {}, //用户地图设置
       mapPolyline: {}, //用户路线
       markers: [], //markers小车
-    }, //用户数据
-    avatarUrl: 'https://img.wxcha.com/m00/4c/bd/0fbb00337b0243db2c3f19cb0032758d.jpg?down',
+    },
+    //用户信息表单
+    userinfoForm: {
+      nickname: '',
+    },
+    // 标记位集合
+    flags: {
+      hiddenUinfoView: false,
+    },
+    // 默认用户头像
+    avatarUrl: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
     theme: wx.getSystemInfoSync().theme,
   },
   // 页面加载
@@ -104,6 +114,9 @@ Page({
     this.setData({
       avatarUrl,
     })
+    // 上传图片信息到云存储
+    // 保存用户头像到服务器
+    console.log("用户提交的头像信息", avatarUrl)
   },
   // 页面切入后台
   onHide() {
@@ -114,8 +127,31 @@ Page({
   },
   // 页面卸载
   onUnload() {},
+  // 用户点击提交个人信息按钮事件处理
+  upUserinfo() {
+    console.log("form表单数据", this.data.userinfoForm.nickname)
+    // TODO 上传服务器
+    // 隐藏用户信息上传组件
+    this.setData({
+      'flags.hiddenUinfoView': true
+    })
+  },
+  // 用户信息表单内容变化后事件处理
+  userinfoFormInputChange(e) {
+    const {
+      field
+    } = e.currentTarget.dataset
+    const that = this
+
+    console.log("用户信息表单内容变化后事件处理", e.detail)
+    that.setData({
+      'userinfoForm.nickname': e.detail.value
+    })
+    console.log(that.data.userinfoForm)
+
+  },
   // 用户点击事件处理
-  bindTap() {
+  userTap() {
     const that = this
     // 拉取周围用户最新数据
     wx.request({
@@ -142,10 +178,10 @@ Page({
           longitude: that.data.user.longitude,
           zIndex: 20,
           iconPath: that.data.avatarUrl, //用户自定义头像
-          alpha:0.5,
-          customCallout:{
+          alpha: 0.5,
+          customCallout: {
 
-          },//自定义气泡
+          }, //自定义气泡
           label: '❤️你一万年',
         }]
       },
