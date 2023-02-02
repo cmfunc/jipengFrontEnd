@@ -49,7 +49,7 @@ Page({
   onShow() {
     wx.onLocationChange((result) => {
       // 上传用户位置变化
-      console.log('用户位置变化' + JSON.stringify(result))
+      console.log('用户位置变化:', result)
       wx.request({
         url: 'http://localhost:7777/v1/geo',
         method: "POST",
@@ -60,10 +60,10 @@ Page({
           'sessionKey': app.globalData.sessionKey,
         },
         success(res) {
-          console.log('上传用户位置成功' + JSON.stringify(res))
+          console.log('上传用户位置成功:', res)
         },
         fail(res) {
-          console.log('上传用户位置失败' + JSON.stringify(res))
+          console.log('上传用户位置失败:', res)
           // 根据状态码，选择重新登陆
         }
       })
@@ -206,22 +206,44 @@ Page({
         'sessionKey': app.globalData.sessionKey,
       },
       success(res) {
-        console.log('拉取周围其他用户成功' + JSON.stringify(res))
+        console.log('拉取周围其他用户成功:', res)
         // TODO 返回的用户数据更新markers
-        that.setData({
-          'user.markers': [{
-            id: 1,
-            latitude: 39.921667,
-            longitude: 116.443636,
-            iconPath: 'https://pic4.zhimg.com/v2-61056ef3732bdadeb90c6de229a41910_r.jpg?source=1940ef5c', //用户自定义头像
+        const markers = [{
+          id: 0,
+          latitude: 39.921667,
+          longitude: 116.443636,
+          iconPath: 'https://pic4.zhimg.com/v2-61056ef3732bdadeb90c6de229a41910_r.jpg?source=1940ef5c', //用户自定义头像
+          width: '60px',
+          height: '60px',
+          callout: {
+            content: '一个人在家，好寂寞', //改成动态展示的形式，语音、文字、图片，点击后播放
+            display: 'ALWAYS',
+          },
+          label: {
+            content: '172.61.27.16',
+            color: '#000000',
+            bgColor: '#FF6666',
+            fontSize: 16,
+            borderColor: '#33CC33',
+            borderWidth: 2,
+            borderRadius: 4,
+            textAlign: 'left',
+          },
+        }]
+        res.data.data.forEach((usergeo, index, _) => {
+          markers.push({
+            id: index + 1,
+            latitude: usergeo.latitude,
+            longitude: usergeo.longitude,
+            iconPath: usergeo.avatar ? usergeo.avatar : 'https://pic4.zhimg.com/v2-61056ef3732bdadeb90c6de229a41910_r.jpg?source=1940ef5c', //用户自定义头像
             width: '60px',
             height: '60px',
             callout: {
-              content: '一个人在家，好寂寞', //改成动态展示的形式，语音、文字、图片，点击后播放
+              content: '一个人在家，好寂寞' + usergeo.weixin_id, //改成动态展示的形式，语音、文字、图片，点击后播放
               display: 'ALWAYS',
             },
             label: {
-              content: '172.61.27.16',
+              content: usergeo.feature,
               color: '#000000',
               bgColor: '#FF6666',
               fontSize: 16,
@@ -230,7 +252,10 @@ Page({
               borderRadius: 4,
               textAlign: 'left',
             },
-          }],
+          })
+        });
+        that.setData({
+          'user.markers': markers,
         })
         console.log('markers:', that.data.user.markers)
       },
