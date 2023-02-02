@@ -1,9 +1,9 @@
 <!--index.wxml-->
 <view class="container" bindtap="userTap">
-  <map class="indexMap" id="userLocationMap" longitude="{{user.longitude}}" latitude="{{user.latitude}}" enable-3D="true" markers="{{markers}}" show-location='true' scale="20" min-scale='1' max-scale='100' enable-traffic='true' enable-building='true' setting="{{user.mapSetting}}" polyline='{{user.mapPolyline}}' enable-overlooking='true' skew='17'>
-    <cover-view slot="callout" wx:for="{{customCalloutArray}}" wx:key="customCallout">
+  <map class="indexMap" id="userLocationMap" longitude="{{user.longitude}}" latitude="{{user.latitude}}" enable-3D="true" markers="{{user.markers}}" show-location='true' scale="20" min-scale='1' max-scale='100' enable-traffic='true' enable-building='true' setting="{{user.mapSetting}}" polyline='{{user.mapPolyline}}' enable-overlooking='true' skew='17'>
+    <!-- <cover-view slot="callout" wx:for="{{customCalloutArray}}" wx:key="customCallout">
       <cover-view marker-id="{{customCallout.id}}"></cover-view>
-    </cover-view>
+    </cover-view> -->
   </map>
   <view data-weui-theme="{{theme}}" hidden="{{flags.hiddenUinfoView}}">
     <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
@@ -12,7 +12,13 @@
     <mp-form models="{{userinfoForm}}">
       <mp-cells>
         <mp-cell title="昵称">
-          <input bindinput="userinfoFormInputChange" type="nickname" value="{{userinfoForm.nickname}}" data-field="nickname" class="weui-input" placeholder="请输入昵称" />
+          <input bindinput="usernameChange" type="nickname" value="{{userinfoForm.nickname}}" data-field="nickname" class="weui-input" placeholder="请输入昵称" />
+        </mp-cell>
+        <mp-cell title="属性">
+          <input bindinput="userfeatureChange" type="feature" value="{{userinfoForm.feature}}" data-field="feature" class="weui-input" placeholder="请输入:身高.体重.年龄.尺寸" />
+        </mp-cell>
+        <mp-cell title="微信号">
+          <input bindinput="userweixinIDChange" type="weixinID" value="{{userinfoForm.weixinID}}" data-field="weixinID" class="weui-input" placeholder="请输入微信号，确保隐私打开可被搜索" />
         </mp-cell>
       </mp-cells>
       <view class="submit_btn_wrap">

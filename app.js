@@ -1,13 +1,14 @@
 // app.js
 
 App({
+  // 全局变量
   globalData: {
     openid: '',
     sessionKey: '',
   },
   // 小程序初始化
   onLaunch() {
-    const that = this
+    let that = this
     // 登录
     wx.login({
       timeout: 5000,
@@ -25,10 +26,10 @@ App({
               'content-type': 'application/json'
             },
             success(res) {
-              console.log('调用本地服务器成功' + res)
-              that.globalData.openid = res.openid
-              that.globalData.sessionKey = res.sessionKey
-              console.log(that.globalData)
+              console.log('调用登陆接口成功' + JSON.stringify(res) )
+              that.globalData.openid = res.data.openid
+              that.globalData.sessionKey = res.data.sessionKey
+              console.log('登陆成功',that.globalData)
             },
             fail(res) {
               console.log('调用本地服务器失败' + res)

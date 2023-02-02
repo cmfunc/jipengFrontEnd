@@ -14,7 +14,10 @@ Page({
     },
     //用户信息表单
     userinfoForm: {
+      avatar: '',
       nickname: '',
+      feature: '',
+      weixinID: '',
     },
     // 标记位集合
     flags: {
@@ -22,6 +25,7 @@ Page({
     },
     // 默认用户头像
     avatarUrl: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
+    // 同步IOS、微信的主题色
     theme: wx.getSystemInfoSync().theme,
   },
   // 页面加载
@@ -45,7 +49,7 @@ Page({
   onShow() {
     wx.onLocationChange((result) => {
       // 上传用户位置变化
-      console.log('用户位置变化' + result)
+      console.log('用户位置变化' + JSON.stringify(result))
       wx.request({
         url: 'http://localhost:7777/v1/geo',
         method: "POST",
@@ -56,10 +60,10 @@ Page({
           'sessionKey': app.globalData.sessionKey,
         },
         success(res) {
-          console.log('上传用户位置成功' + res)
+          console.log('上传用户位置成功' + JSON.stringify(res))
         },
         fail(res) {
-          console.log('上传用户位置失败' + res)
+          console.log('上传用户位置失败' + JSON.stringify(res))
           // 根据状态码，选择重新登陆
         }
       })
@@ -68,7 +72,6 @@ Page({
         'user.longitude': result.longitude,
         'user.latitude': result.latitude,
       })
-      console.log(app.globalData)
     })
     // 接收socket消息
     wx.onSocketMessage((res) => {
@@ -114,8 +117,11 @@ Page({
     this.setData({
       avatarUrl,
     })
-    // 上传图片信息到云存储
-    // 保存用户头像到服务器
+    // TODO 上传图片信息到云存储
+    // 保存 用户头像到data.userinfoForm.avatar
+    this.setData({
+      'userinfoForm.avatar': avatarUrl,
+    })
     console.log("用户提交的头像信息", avatarUrl)
   },
   // 页面切入后台
@@ -129,26 +135,58 @@ Page({
   onUnload() {},
   // 用户点击提交个人信息按钮事件处理
   upUserinfo() {
-    console.log("form表单数据", this.data.userinfoForm.nickname)
-    // TODO 上传服务器
+    const that = this
+    console.log("form表单数据:", that.data.userinfoForm)
+    // 上传服务器
+    wx.request({
+      url: 'http://localhost:7777/v1/user/info',
+      method: "POST",
+      data: that.data.userinfoForm,
+      header: {
+        'content-type': 'application/json',
+        'openid': app.globalData.openid,
+        'sessionKey': app.globalData.sessionKey,
+      },
+      success(res) {
+        console.log('更新用户信息成功' + JSON.stringify(res))
+      },
+      fail(res) {
+        console.log('更新用户信息失败' + JSON.stringify(res))
+        // 根据状态码，选择重新登陆
+      }
+    })
     // 隐藏用户信息上传组件
     this.setData({
       'flags.hiddenUinfoView': true
     })
   },
   // 用户信息表单内容变化后事件处理
-  userinfoFormInputChange(e) {
+  usernameChange(e) {
     const {
       field
     } = e.currentTarget.dataset
     const that = this
-
     console.log("用户信息表单内容变化后事件处理", e.detail)
     that.setData({
       'userinfoForm.nickname': e.detail.value
     })
     console.log(that.data.userinfoForm)
-
+  },
+  userfeatureChange(e) {
+    const that = this
+    console.log("用户信息表单内容变化后事件处理", e.detail)
+    that.setData({
+      'userinfoForm.feature': e.detail.value
+    })
+    console.log(that.data.userinfoForm)
+  },
+  userweixinIDChange(e) {
+    const that = this
+    console.log("用户信息表单内容变化后事件处理", e.detail)
+    that.setData({
+      'userinfoForm.weixinID': e.detail.value
+    })
+    console.log(that.data.userinfoForm)
   },
   // 用户点击事件处理
   userTap() {
@@ -168,22 +206,33 @@ Page({
         'sessionKey': app.globalData.sessionKey,
       },
       success(res) {
-        console.log('拉取周围其他用户成功' + res)
-        // @todo res更新markers
-        this.markers = [{
-          id: 1,
-          clusterId: 0,
-          joinCluster: true,
-          latitude: that.data.user.latitude,
-          longitude: that.data.user.longitude,
-          zIndex: 20,
-          iconPath: that.data.avatarUrl, //用户自定义头像
-          alpha: 0.5,
-          customCallout: {
-
-          }, //自定义气泡
-          label: '❤️你一万年',
-        }]
+        console.log('拉取周围其他用户成功' + JSON.stringify(res))
+        // TODO 返回的用户数据更新markers
+        that.setData({
+          'user.markers': [{
+            id: 1,
+            latitude: 39.921667,
+            longitude: 116.443636,
+            iconPath: 'https://pic4.zhimg.com/v2-61056ef3732bdadeb90c6de229a41910_r.jpg?source=1940ef5c', //用户自定义头像
+            width: '60px',
+            height: '60px',
+            callout: {
+              content: '一个人在家，好寂寞', //改成动态展示的形式，语音、文字、图片，点击后播放
+              display: 'ALWAYS',
+            },
+            label: {
+              content: '172.61.27.16',
+              color: '#000000',
+              bgColor: '#FF6666',
+              fontSize: 16,
+              borderColor: '#33CC33',
+              borderWidth: 2,
+              borderRadius: 4,
+              textAlign: 'left',
+            },
+          }],
+        })
+        console.log('markers:', that.data.user.markers)
       },
       fail(res) {
         console.log('拉取周围其他用户失败' + res)
