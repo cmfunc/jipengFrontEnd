@@ -67,6 +67,13 @@ Page({
           // 根据状态码，选择重新登陆
         }
       })
+      // 判断是否是否需要提醒用户补全用户信息
+      console.log('页面渲染完成:', this.data, app.globalData)
+      if (app.globalData.avatar && app.globalData.nickname && app.globalData.feature && app.globalData.weixinID) {
+        this.setData({
+          'flags.hiddenUinfoView': true,
+        })
+      }
       // 修改map组件的经纬度
       this.setData({
         'user.longitude': result.longitude,
